@@ -6,13 +6,20 @@ the change in vortensity due to a shock.
 
 The 1D axisymmetric surface density of the protoplanetary disk can 
 be generated within seconds and provides a good fit (especially in
-the outer disk) to the evolution of 
+the outer disk) to the evolution of the disk.
 
 `vortensity_k` contains a python implementation with `example.ipynb`
 showing how to use it, and `vortensity_matlab/` contains a matlab
 implementation. Running the python implementation requires matplotlib, 
 numpy and scipy to be installed. The matlab implementation works 
 with base matlab.
+
+These both also contain a way of calculating $K(R) \equiv \partial F/\partial R \Sigma^{-1}$
+the use of which will be discussed in a forthcoming paper.
+
+Please note that these versions have similar looking but DIFFERENT
+commands to call each of the functions (and a slightly
+different implementation of the r to $\tau$ transformation).
 
 ## Example Output
 ![plot](example.png)
