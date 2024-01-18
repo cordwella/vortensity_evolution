@@ -1,4 +1,4 @@
-function k_r = compute_k_r(R, m_p, h_p, p)
+function k_r = compute_f_r(R, m_p, h_p, p)
     
     tau = r_to_tau(R, m_p, h_p, p);
     delta_chi = compute_delta_chi(tau, m_p);

@@ -57,7 +57,6 @@ def compute_delta_chi(R, tau, tau_0, inner_smooth=True):
 
     chi = (inner * (R <= 1).astype(int) + outer * (R > 1).astype(int)) * (
         tau >= 1.05 * tau_0).astype(int)
-    # Only defined for tau > tau_0, zero otherwise
     # however this is currently adding some numerical instabilities so lets 
     # add in a small amount of smoothing inside - 5% of the inside of tau_0        
     
@@ -69,7 +68,7 @@ def compute_omega_k_squared(R):
     return R**(-3)
 
 
-def compute_K_R(R, p, h_p, m_p):
+def compute_f_R_CR21(R, p, h_p, m_p):
     
     # Mass is in thermal units
     # Compute thermal mass at the planet
