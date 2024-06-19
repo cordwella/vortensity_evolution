@@ -1,4 +1,4 @@
-# Gap formation driven by planets in invisicd discs
+# Gap formation driven by planets in globally isothermal invisicd discs
 
 This repository implements the methods of Cimerman & Rafikov (2021),
 Cimerman & Rafikov (2023) and Cordwell & Rafikov (2024) to generate
@@ -7,20 +7,12 @@ protoplanetary discs. The 1D axisymmetric surface density of the
 protoplanetary disk can  be generated within seconds and provides
 a good fit (especially in the outer disk) to the evolution of the disk.
 
-We provide implementations of the vortensity reconstruction methods 
-in both python and matlab, however the linear analytic solution is 
-only provided in python.
-
 Please see the associated notebooks for examples of function calls and 
 output.
 
 Running the python implementation requires matplotlib, 
-numpy and scipy to be installed. The matlab implementation works 
-with base matlab.
+numpy and scipy to be installed. 
 
-Please note that the python and Matlab implementationa have similar 
-looking but different commands to call (and a slightly
-different implementation of the r to $\tau$ transformation).
 
 ## Example Output
 ![plot](example.png)
@@ -32,20 +24,20 @@ They then used this to describe the linear evolution in vortensity $\zeta$.
 CR23 extended this to reconstruct the surface 
 density of a disk from its vortensity.
 
-CR24 
+CR24 derived a linear model of surface density evolution that takes in 
+$f_{\text{dep}} = \Sigma^{-1} \partial F/\partial R$ as an input and 
+estimates the future evolution. See the paper for details.
 
 ## Changes from the published papers
-This repository includes an adjustment of $2 \pi$ multiplied to
-$\Delta \zeta$. This was an error in the original paper due to a
-mistaken normalisation, the evidence for this shift is shown in 
-the python notebook example and a correction from the original 
-authors is forthcoming.
+This repository fixes an error in the fitting parameters for $\Delta \chi$ 
+in CR21. This was an error in the original paper due to a mistake in 
+normalisiation.
 
 ## Use in further work
 These codes may be freely distributed and modified as long as 
 credit to the author (Amelia J. Cordwell) remains. Any use 
-in a scientific publication should cite both this repository, 
-and the relevant papers.
+in a scientific publication should cite this repository, 
+Cimerman & Rafikov (2021) and Cordwell & Rafikov (2024).
 
 
 ## Referenced papers

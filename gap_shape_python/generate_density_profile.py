@@ -1,6 +1,7 @@
 import numpy as np
 import scipy.integrate as integrate
 
+from .calc_shock import compute_delta_chi, compute_tau_R_keplerian
 from .constants import FIT_PARAMETERS
 
 # NOTE: Please see the associated implementation Jupyter notebook for
@@ -9,61 +10,14 @@ from .constants import FIT_PARAMETERS
 """ Functions to generate the density profile of a disk perturbed by
 a sub thermal mass planet """
 
-
-def compute_tau_R_keplerian(R, p, h_p, m_p_by_m_th):
-    """Compute tau(R) where R is either a single value or a numpy array
-
-    R must be in units of the planetary radius
-
-    """
-    # TODO: provide non-Keplerian version of this
-    # Using equation 18
-    def of_s(s):
-        return (np.abs(s**(3/2) - 1))**(3/2) * s**(p/2 - 11/4)
-
-    # This is inefficent, but it's also very quick so I'm not fixing it
-    # effectively a for loop
-    perform_integral = np.vectorize(
-        lambda x: integrate.quad(of_s, 1, x))
-
-    tau = (np.sign(R - 1) * (3/(2**(5/4))) * m_p_by_m_th *
-           h_p**(-5/2) * np.abs(perform_integral(R)[0]))
-
-    # Formally tau isn't absolute values, however for the computation
-    # we're doing here it fixes some issues
-    return np.abs(tau)
-
-
-def compute_delta_chi(R, tau, tau_0):
-    """Compute delta chi(tau) using the fit parameters"""
-
-    # Compute the inner fit
-    tau_squiggle = np.abs(tau - tau_0)
-
-    A, tau_b, alpha_1, alpha_2, delta = FIT_PARAMETERS['inner']
-
-    inner = (A * (tau_squiggle/tau_b)**(-1 * alpha_1) *
-             (1 + (tau_squiggle/tau_b)**(1/delta))**(
-                (alpha_1 - alpha_2)*delta))
-
-    # Compute the outer fit
-    A, tau_b, alpha_1, alpha_2, delta = FIT_PARAMETERS['outer']
-    outer = (A * np.abs(tau_squiggle/tau_b)**(-1 * alpha_1) *
-             (1 + (tau_squiggle/tau_b)**(1/delta))**(
-                (alpha_1 - alpha_2)*delta))
-
-    # Only defined for tau > tau_0, zero otherwise
-    return (inner * (R <= 1).astype(int) + outer * (R > 1).astype(int)) * (
-        tau > tau_0).astype(int)
-
-
 def compute_omega_k_squared(R):
     """Give the keplerian angular speed squared, using  G = 1, M_star=1"""
     return R**(-3)
 
 
 def compute_delta_zeta(R, p, h_p, m_p,
-                       linear_shock=False, mass_in_thermal=True):
+                       linear_shock=False, mass_in_thermal=True,
+                       use_cr_21=False):
     """
     Find the vortensity jump at a shock front for a given system
 
@@ -109,7 +63,7 @@ def compute_delta_zeta(R, p, h_p, m_p,
 
     # Comptute shock strength
     tau_0 = 1.89 * m_p_by_m_th  # equation 16
-    delta_chi = compute_delta_chi(R, tau, tau_0)
+    delta_chi = compute_delta_chi(R, tau, tau_0, use_cr_21)
 
     # Combine to get the vortensity jump
     # Compute B(R) and C(R)
@@ -123,7 +77,7 @@ def compute_delta_zeta(R, p, h_p, m_p,
             1 + h_p**(-2) * R**2 * ((R**(-3/2) - 1)**2))
     else:
         delta_phi = 1
-        d_tau_d_r = np.gradient(tau, R)  # yes this is lazy, no i will not
+        d_tau_d_r = np.gradient(tau, R)
         correction = delta_phi * h_p ** 2 * d_tau_d_r/(
             2 * np.abs(tau - tau_0)**(1/2))
 
@@ -252,7 +206,7 @@ def construct_surface_density(R, p, h_p, m_p, orbits,
         del_zeta_del_t = del_zeta * np.abs(R**(-3/2) - 1)/(2 * np.pi)
         # One factor of 2 pi is for time, and the second factor is to adjust for 
         # the incorrect scaling in the original paper
-        zeta = background_vortensity(R, p, h_p) + del_zeta_del_t  * orbits * 4 * np.pi**2
+        zeta = background_vortensity(R, p, h_p) + del_zeta_del_t  * orbits * 2 * np.pi
 
     return reconstruct_surface_density(
         R, p, h_p, zeta, c, max_error,

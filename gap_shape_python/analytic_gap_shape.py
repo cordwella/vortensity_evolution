@@ -2,7 +2,7 @@ import numpy as np
 from scipy.integrate import cumulative_trapezoid
 from scipy.special import iv, ive, kv, kve
 
-from gap_shape_python.calc_shock import compute_f_R_CR21
+from gap_shape_python.calc_shock import compute_f_dep
 
 
 # Implements the analytic solutions for the initial evolution of a gap in a 
@@ -13,6 +13,8 @@ def non_local_change_in_density(R, p, q, h_p, m_p, f_r=None):
     Use the global solution for the initial evolution of a gap in a 
     protoplanetary disc.
     
+    See equation C4 in Cordwell & Rafikov (2024)
+    
     Inputs:
     - R, input array of locations to evaluate
     - p, background gradient in surface density (Sigma_0 = R^(-p))
@@ -22,16 +24,16 @@ def non_local_change_in_density(R, p, q, h_p, m_p, f_r=None):
     - f_r (optional), pre-evaluated angular momentum deposition function
     
     Returns:
-    - dX/dt, array with the same shape as R
+    - d\sigma / dt, array with the same shape as R
     """
     
     if q == 0.5:
-        raise Exception("q = 1/2")
+        raise Exception("Solution not provided for q = 1/2")
 
 
     if f_r is None:
         # Allow override
-        f_r = compute_f_R_CR21(R, p, h_p, m_p)[0]
+        f_r = compute_f_dep(R, p, h_p, m_p)[0]
 
     A = h_p
 
@@ -60,6 +62,8 @@ def local_approximation_change_in_density(R, p, h_p, m_p, f_r=None):
     """
     Use the local solution for the initial evolution of a gap in a 
     protoplanetary disc.
+    
+    See equation X in Cordwell & Rafikov (2024). 
     
     Inputs:
     - R, input array of locations to evaluate
@@ -106,7 +110,7 @@ def no_pressure_support_change_in_density(R, p, h_p, m_p, f_r=None):
 
     if f_r is None:
         # Allow override
-        f_r = compute_f_R_CR21(R, p, h_p, m_p)[0]
+        f_r = compute_f_dep(R, p, h_p, m_p)[0]
         
     inner_source = f_r/(np.pi * R**(p -1/2))
 
