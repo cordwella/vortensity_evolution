@@ -31,7 +31,7 @@ estimates the future evolution. See the paper for details.
 ## Changes from the published papers
 This repository fixes an error in the fitting parameters for $\Delta \chi$ 
 in CR21. This was an error in the original paper due to a mistake in 
-normalisiation.
+normalisiation, and is discussed further in CR24.
 
 ## Use in further work
 These codes may be freely distributed and modified as long as 

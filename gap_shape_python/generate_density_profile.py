@@ -17,7 +17,7 @@ def compute_omega_k_squared(R):
 
 def compute_delta_zeta(R, p, h_p, m_p,
                        linear_shock=False, mass_in_thermal=True,
-                       use_cr_21=False):
+                       use_cr_21=True):
     """
     Find the vortensity jump at a shock front for a given system
 
@@ -192,7 +192,7 @@ def reconstruct_surface_density(R, p, h_p, zeta,
     return with_ghost[1:-1], total_error
 
 
-def construct_surface_density(R, p, h_p, m_p, orbits,
+def construct_surface_density(R, p, h_p, m_p, orbits, use_cr_21=True,
                                            c=2/3, max_error=1e-7,
                                            max_iter=500000):
     """ Construct surface density for a planet that has been in existence for a given 
@@ -202,11 +202,13 @@ def construct_surface_density(R, p, h_p, m_p, orbits,
     if m_p == 0:
         zeta = background_vortensity(R, p, h_p)
     else:
-        del_zeta = compute_delta_zeta(R, p, h_p, m_p)
+        del_zeta = compute_delta_zeta(R, p, h_p, m_p, use_cr_21=use_cr_21)
         del_zeta_del_t = del_zeta * np.abs(R**(-3/2) - 1)/(2 * np.pi)
         # One factor of 2 pi is for time, and the second factor is to adjust for 
         # the incorrect scaling in the original paper
         zeta = background_vortensity(R, p, h_p) + del_zeta_del_t  * orbits * 2 * np.pi
+        if use_cr_21:
+            zeta = background_vortensity(R, p, h_p) + del_zeta_del_t  * orbits * 4 * np.pi**2
 
     return reconstruct_surface_density(
         R, p, h_p, zeta, c, max_error,

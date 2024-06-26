@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.integrate as integrate
 
-from .constants import FIT_PARAMETERS, FIT_PARAMETERS_CR_21
+from .constants import FIT_PARAMETERS, FIT_PARAMETERS_CR_21, CORRECTION_POWER
 
 # NOTE: Please see the associated implementation Jupyter notebook for
 # references and equation sources
@@ -82,7 +82,9 @@ def compute_f_dep(R, p, h_p, m_p, use_cr_21=False, alternative_fit=None):
     tau_0 = 1.89 * m_p  # equation 16 in CR21
     delta_chi = compute_delta_chi(R, tau, tau_0, use_cr_21, alternative_fit)
 
-    epsilon = delta_chi * m_p * (np.abs(R**(-3/2) - 1)/(R**(1 - p) * h_p * np.sqrt(2)))**(1/2)
+    epsilon = delta_chi * m_p**(CORRECTION_POWER) * (np.abs(R**(-3/2) - 1)/(R**(1 - p) * h_p * np.sqrt(2)))**(1/2)
+    if use_cr_21:
+        epsilon = delta_chi * m_p * (np.abs(R**(-3/2) - 1)/(R**(1 - p) * h_p * np.sqrt(2)))**(1/2)
     
     psi = (epsilon * (2 + epsilon) - 2 * (1 + epsilon) * np.log(1 + epsilon))/(2 * (1 + epsilon))
     

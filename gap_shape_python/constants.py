@@ -4,12 +4,15 @@ FIT_PARAMETERS_CR_21 = {
     "outer": [3.11, 0.181, -8.63, 0.525, 0.766]}
 
 # Corrected fitting parameters - see notebook 'Corrections to Fitting Parameters'
+CORRECTION_POWER = 1.075
+
 FIT_PARAMETERS = {
-    'inner': [ 3.64447063,  0.41486091, -7.75264931,  0.51830383,  0.59109359],
-    'outer': [ 4.99262939,  0.29350545, -5.74964165,  0.53780626,  0.70719867]
-}
+    'inner':  [ 4.15657039,  0.40240077, -7.97554296,  0.51754275,  0.59498679],
+    'outer': [ 6.118099,    0.25645406, -6.4618353,   0.54019819,  0.72891279]}
+
 
 # Boltzmanns constant in SI units
+
 k_b = 1.380e-23
 
 # SI graviational constant

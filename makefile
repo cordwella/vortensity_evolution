@@ -1,5 +1,5 @@
 IMAGE ?= dust-filtration:latest
-RUN ?= docker run -i -t --user=$$(id -u):$(id -g)  -v$$(pwd):/work -w /work  --net=host $(IMAGE)
+RUN ?= docker run -i -t --user=$$(id -u):$(id -g)  -v$$(pwd):/work -w /work -p 8889:8888 $(IMAGE)
 
 .PHONY: enter matlab
 
